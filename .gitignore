@@ -1,0 +1,22 @@
+# Python Cache & Notebooks
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+.pytest_cache/
+
+# Large Dataset Directories (WAV/NPY flight frames)
+dataset/
+
+# Deep Learning Weight Checkpoints
+output/*.pth
+output/model_best.pth
+
+# Generated Large Visualizer HTML & Temporary Assets
+output/interactive_trajectory_3d.html
+output/pyvista_interactive_vtk.html
+output/pyvista_trajectory_desktop.png
+
+# OS specifics
+.DS_Store
+Thumbs.db
