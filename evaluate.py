@@ -2,6 +2,7 @@ import os
 import argparse
 import numpy as np
 import torch
+import json
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 from sklearn.gaussian_process import GaussianProcessRegressor
@@ -247,6 +248,35 @@ def main():
 
     # Plot results
     plot_trajectories(gt_array, predict_array, smoothed_array, args.plot_out)
+
+    # Save metrics to JSON inside the output directory
+    metrics_data = {
+        "raw_predictions": {
+            "Dx": float(Dx),
+            "Dy": float(Dy),
+            "Dz": float(Dz),
+            "E": float(E)
+        }
+    }
+    if smoothed_array is not None:
+        metrics_data["gp_smoothed"] = {
+            "Dx": float(Dx_s),
+            "Dy": float(Dy_s),
+            "Dz": float(Dz_s),
+            "E": float(E_s)
+        }
+        metrics_data["gp_difference"] = {
+            "Dx": float(Dx_s - Dx),
+            "Dy": float(Dy_s - Dy),
+            "Dz": float(Dz_s - Dz),
+            "E": float(E_s - E)
+        }
+
+    os.makedirs(os.path.dirname(args.plot_out), exist_ok=True)
+    json_path = os.path.join(os.path.dirname(args.plot_out), "metrics.json")
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(metrics_data, f, indent=4)
+    print(f"Metrics successfully saved to JSON at {json_path}")
 
 if __name__ == "__main__":
     main()
