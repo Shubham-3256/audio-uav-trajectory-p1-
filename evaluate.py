@@ -63,10 +63,10 @@ def evaluate_model(model, val_anno, audio_path, gt_path, device):
     return gt_array, predict_array
 
 def smooth_with_gp(predict_array):
-    print("Applying Gaussian Process Smoothing using the authors' notebook parameters...")
-    # Use the notebook's automated RBF optimization with alpha=0.1 and normalize_y=True
-    kernel = C(1.0, (1e-3, 1e3)) * RBF(10.0, (1e-2, 1e2))
-    gp = GaussianProcessRegressor(kernel=kernel, alpha=0.1, n_restarts_optimizer=5, normalize_y=True)
+    print("Applying unconstrained Gaussian Process Smoothing with optimal RBF boundaries...")
+    # Expand upper bound to 1e4 to let the optimizer converge to the absolute global optimum
+    kernel = C(1.0, (1e-3, 1e3)) * RBF(100.0, (1e-1, 1e4))
+    gp = GaussianProcessRegressor(kernel=kernel, alpha=0.1, n_restarts_optimizer=10, normalize_y=True)
     
     X = np.arange(len(predict_array)).reshape(-1, 1)
     
